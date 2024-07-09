@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 {
     FILE *arq;
     Registro reg;
-    if((arq = fopen("registrosOrdenadosCem.bin", "rb")) == NULL){
+    if((arq = fopen("registrosDesordenadosCem.bin", "rb")) == NULL){
         perror("Erro na criação do arquivo\n");
         exit(1);
     }
@@ -32,7 +32,4 @@ int main(int argc, char *argv[])
     fclose(arq);
     return 0;
 
-
-
-
-}
+} 
