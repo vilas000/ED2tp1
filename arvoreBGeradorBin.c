@@ -15,6 +15,7 @@ typedef struct{
     char dado3[SIZE_DADO3];
 }Item;
 
+typedef struct TipoPaginaBin* TipoApontadorBin;
 typedef struct TipoPagina* TipoApontador;
 
 typedef struct TipoPagina{
@@ -23,6 +24,17 @@ typedef struct TipoPagina{
     TipoApontador apontadores[MM + 1];
     bool ehFolha;
 }TipoPagina;
+
+typedef struct TipoPaginaBin{
+    short n;
+    Item registros[MM];
+    int apontadores[MM + 1];
+    
+}TipoPaginaBin;
+
+void inicializaArvoreBin(TipoApontadorBin *Arvore){
+    *Arvore = NULL;
+}
 
 void inicializaArvore(TipoApontador *Arvore){
     *Arvore = NULL;
@@ -120,7 +132,7 @@ void Ins(Item Reg, TipoApontador pArvore, bool *cresceu, Item *regRetorno, TipoA
         pArvore->n = M;
         pArvoreTemp->apontadores[0] = pArvore->apontadores[M + 1];
         pArvore->ehFolha = false;
-        pArvoreTemp->ehFolha = true;
+        pArvoreTemp->ehFolha = true;        
         *regRetorno = pArvore->registros[M];
         *pArvoreRetorno = pArvoreTemp;        
 }
@@ -141,39 +153,69 @@ void insere(Item Reg, TipoApontador *pArvore){
     }
 }
 
+void caminhamento(TipoApontador *apontador, TipoApontadorBin apontadorBin, long i){
+    
+    if(apontador == NULL)
+        return;
+    
+    TipoApontador** filaOriginal = (TipoApontador**)malloc(QUANT_REG * sizeof(TipoApontador*));
+    int frente = 0;
+    int final = 0;
+
+    filaOriginal[final++] = apontador;
+
+    while(frente < final){
+        TipoApontador* atual = filaOriginal[frente++];
+
+        //gravacao em arquivo binario
+        apontadorBin->apontadores[0] = i; i++;
+        apontadorBin->n = (*atual)->n;
+        for(int x = 0; x < (*atual)->n; x++){
+            apontadorBin->apontadores[x + 1] = i; i++;
+            apontadorBin->registros[x] = (*atual)->registros[x];
+        }
+
+        if(!(*atual)->ehFolha){
+            for(int y = 0; y <= (*atual)->n; y++){
+                if((*atual)->apontadores[y] != NULL){
+                    filaOriginal[final++] = (&(*atual)->apontadores[y]);
+                }
+            }
+        }
+
+    }
+    free(filaOriginal); 
+}
+
 int main(){
 
-    FILE *arq;
+    FILE *arq1;
+    FILE *arq2;
     Item item;
     TipoApontador apontador;
+    TipoApontadorBin apontadorBin;
     unsigned int c;
 
-    if((arq = fopen("registrosDesordenadosCem.bin", "rb")) == NULL){
+    if((arq1 = fopen("registrosDesordenadosCem.bin", "rb")) == NULL){
         perror("Erro na abertura do arquivo\n");
         exit(1);
     } 
-
     //criacao da arvore B
     inicializaArvore(&apontador);
 
     //insercao de elementos na arvore
-    for(int i = 0; fread(&item, sizeof(Item), 1, arq) > 0; i++)
+    for(int i = 0; fread(&item, sizeof(Item), 1, arq1) > 0; i++)
         insere(item, &apontador);
 
-    //pesquisa por elementos da arvore
-
-    printf("Qual a chave do registro que deseja? ");
-    scanf("%d", &c);
-
-    if(pesquisa(c, &item, apontador)){
-        printf("\nChave: %u", item.chave);
-        printf("\nDado 1: %ld", item.dado1);
-        printf("\nDado 2: %s", item.dado2);
-        printf("\nDado 3: %s", item.dado3);
-    } else 
-        printf("Item nao encontrado");
+    if((arq2 = fopen("arvoreBCem.bin", "wb")) == NULL){
+        perror("Erro na abertura do arquivo\n");
+        exit(1);
+    } 
     
-    fclose(arq);
+    caminhamento(&apontador, apontadorBin, 1);
+    
+    fclose(arq1);
+    fclose(arq2);
 
     return 0;
 }
