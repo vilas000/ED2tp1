@@ -28,25 +28,25 @@ void inicializaArvore(TipoApontador *Arvore){
     *Arvore = NULL;
 }
 
-bool pesquisa(unsigned int c, Item *x, TipoApontador arvore){
+bool pesquisa(Item *x, TipoApontador arvore){
 
     long i = 1;
     
     if(arvore == NULL)
         return false;
 
-    while(i < arvore->n && c > arvore->registros[i - 1].chave) 
+    while(i < arvore->n && x->chave > arvore->registros[i - 1].chave) 
         i++;
 
-    if(c == arvore->registros[i - 1].chave){
+    if(x->chave == arvore->registros[i - 1].chave){
         *x = arvore->registros[i - 1];
         return true;
     }
 
-    if(c < arvore->registros[i - 1].chave)
-        return pesquisa(c, x, arvore->apontadores[i - 1]);
+    if(x->chave < arvore->registros[i - 1].chave)
+        return pesquisa(x, arvore->apontadores[i - 1]);
     else    
-        return pesquisa(c, x, arvore->apontadores[i]);
+        return pesquisa(x, arvore->apontadores[i]);
 }
 
 void insereNaPagina(TipoApontador pArvore, Item Reg, TipoApontador pDireita){
@@ -146,8 +146,7 @@ int main(){
     FILE *arq;
     Item item;
     TipoApontador apontador;
-    unsigned int c;
-
+    
     if((arq = fopen("registrosDesordenadosCem.bin", "rb")) == NULL){
         perror("Erro na abertura do arquivo\n");
         exit(1);
@@ -163,9 +162,9 @@ int main(){
     //pesquisa por elementos da arvore
 
     printf("Qual a chave do registro que deseja? ");
-    scanf("%d", &c);
+    scanf("%u", &item.chave);
 
-    if(pesquisa(c, &item, apontador)){
+    if(pesquisa(&item, apontador)){
         printf("\nChave: %u", item.chave);
         printf("\nDado 1: %ld", item.dado1);
         printf("\nDado 2: %s", item.dado2);
