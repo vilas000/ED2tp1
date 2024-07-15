@@ -141,7 +141,7 @@ void insere(Item Reg, TipoApontador *pArvore){
     }
 }
 
-int main(){
+int main(void) {
 
     FILE *arq;
     Item item;
@@ -163,7 +163,7 @@ int main(){
 
     printf("Qual a chave do registro que deseja? ");
     scanf("%u", &item.chave);
-
+    
     if(pesquisa(&item, apontador)){
         printf("\nChave: %u", item.chave);
         printf("\nDado 1: %ld", item.dado1);

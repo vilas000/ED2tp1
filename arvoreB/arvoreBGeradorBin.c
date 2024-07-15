@@ -153,10 +153,12 @@ void insere(Item Reg, TipoApontador *pArvore){
     }
 }
 
-void caminhamento(TipoApontador *apontador, TipoApontadorBin apontadorBin, long i){
+void caminhamento(FILE* arquivo, TipoApontador *apontador, TipoApontadorBin apontadorBin, long i){
     
     if(apontador == NULL)
         return;
+
+    rewind(arquivo);
     
     TipoApontador** filaOriginal = (TipoApontador**)malloc(QUANT_REG * sizeof(TipoApontador*));
     int frente = 0;
@@ -174,6 +176,7 @@ void caminhamento(TipoApontador *apontador, TipoApontadorBin apontadorBin, long 
             apontadorBin->apontadores[x + 1] = i; i++;
             apontadorBin->registros[x] = (*atual)->registros[x];
         }
+        fwrite(apontadorBin, sizeof(TipoApontadorBin), 1, arquivo);
 
         if(!(*atual)->ehFolha){
             for(int y = 0; y <= (*atual)->n; y++){
@@ -193,8 +196,7 @@ int main(){
     FILE *arq2;
     Item item;
     TipoApontador apontador;
-    TipoApontadorBin apontadorBin;
-    unsigned int c;
+    TipoApontadorBin apontadorBin = NULL;
 
     if((arq1 = fopen("registrosDesordenadosCem.bin", "rb")) == NULL){
         perror("Erro na abertura do arquivo\n");
@@ -212,7 +214,7 @@ int main(){
         exit(1);
     } 
     
-    caminhamento(&apontador, apontadorBin, 1);
+    caminhamento(arq2, &apontador, apontadorBin, 1);
     
     fclose(arq1);
     fclose(arq2);
