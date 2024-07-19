@@ -16,20 +16,27 @@ typedef struct{
 int main(int argc, char *argv[])
 {
     FILE *arq;
+    FILE *arqTextoGerado;
     Registro reg;
     if((arq = fopen("registrosDesordenadosCem.bin", "rb")) == NULL){
         perror("Erro na criação do arquivo\n");
         exit(1);
     }
 
+    if((arqTextoGerado = fopen("registrosOrdenados.txt", "w")) == NULL){
+        perror("Erro na criação do arquivo\n");
+        exit(1);
+    }
+
     while(fread(&reg, sizeof(reg), 1, arq) == 1){
-        printf("%d\n", reg.chave);
-        printf("%ld\n", reg.dado1);
-        printf("%s\n\n", reg.dado2);
-        printf("%s\n\n", reg.dado3);
+        fprintf(arqTextoGerado, "%d\n", reg.chave);
+        fprintf(arqTextoGerado, "%ld\n", reg.dado1);
+        fprintf(arqTextoGerado, "%s\n\n", reg.dado2);
+        fprintf(arqTextoGerado, "%s\n\n", reg.dado3);
     }
 
     fclose(arq);
+    fclose(arqTextoGerado);
     return 0;
 
 } 
