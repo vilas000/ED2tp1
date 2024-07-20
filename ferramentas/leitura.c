@@ -26,8 +26,14 @@ typedef struct TipoPaginaBin{
 int main(int argc, char *argv[])
 {
     FILE *arq;
+    FILE *arqTextoGerado;
     Registro reg;
     if((arq = fopen("registrosOrdenadosCem.bin", "rb")) == NULL){
+        perror("Erro na criação do arquivo\n");
+        exit(1);
+    }
+
+    if((arqTextoGerado = fopen("registrosOrdenados.txt", "w")) == NULL){
         perror("Erro na criação do arquivo\n");
         exit(1);
     }
@@ -40,6 +46,7 @@ int main(int argc, char *argv[])
     }
 
     fclose(arq);
+    fclose(arqTextoGerado);
     return 0;
 
 } 
