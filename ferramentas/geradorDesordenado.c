@@ -15,7 +15,6 @@ typedef struct{
 }Registro;
 
 void embaralha(Registro *vetor, size_t n){
-
     if (n > 1) {
         for (size_t i = 0; i < n - 1; i++) {
             size_t j = i + rand() % (n - i);
@@ -28,7 +27,6 @@ void embaralha(Registro *vetor, size_t n){
 
 int main(int argc, char *argv[])
 {
-
     srand(time(NULL));
 
     const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -47,7 +45,7 @@ int main(int argc, char *argv[])
     for(int i = 0; i < QUANT_REG; i++){
 
         //Obtencao da chave
-        reg[i].chave = chaveAtual + rand() % (INT_MAX - chaveAtual + 1); 
+        reg[i].chave = chaveAtual + rand() % (INT_MAX); 
         chaveAtual = reg[i].chave; //Garantir que as chaves serao crescentes
 
         //Obtencao do dado1

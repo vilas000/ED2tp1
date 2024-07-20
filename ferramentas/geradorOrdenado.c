@@ -45,12 +45,16 @@ int main(int argc, char *argv[])
             reg.dado2[j] = charset[indiceAleatorio];
         }
 
+        reg.dado2[SIZE_DADO2 - 1] = '\0';
+
         //Obtencao do dado3
         for(int k = 0; k < SIZE_DADO3 - 1; k++){
             int indiceAleatorio = rand() % charsetSize;
             reg.dado3[k] = charset[indiceAleatorio];
         }
 
+        reg.dado2[SIZE_DADO3 - 1] = '\0';
+        
         //Escrita dos valores obtidos no arquivo binario
         fwrite(&reg, sizeof(reg), 1, arq);
     }

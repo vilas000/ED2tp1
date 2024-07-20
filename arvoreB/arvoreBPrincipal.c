@@ -109,7 +109,7 @@ void Ins(Item Reg, TipoApontador pArvore, bool *cresceu, Item *regRetorno, TipoA
     if(i < M + 1){
         insereNaPagina(pArvoreTemp, pArvore->registros[(M * 2) - 1], pArvore->apontadores[M * 2]);
         (pArvore->n)--;
-        insereNaPagina(pArvoreTemp, *regRetorno, *pArvoreRetorno);
+        insereNaPagina(pArvore, *regRetorno, *pArvoreRetorno);
     }
     else insereNaPagina(pArvoreTemp, *regRetorno, *pArvoreRetorno);
 
@@ -128,14 +128,14 @@ void Ins(Item Reg, TipoApontador pArvore, bool *cresceu, Item *regRetorno, TipoA
 void insere(Item Reg, TipoApontador *pArvore){
     bool cresceu;
     Item itemRetorno;
-    TipoPagina *pRetorno, *pTemp;
+    TipoApontador pRetorno, pTemp;
     Ins(Reg, *pArvore, &cresceu, &itemRetorno, &pRetorno);
     if(cresceu){ // Arvore cresce na altura pela raiz
         pTemp = (TipoPagina*)malloc(sizeof(TipoPagina));
         pTemp->n = 1;
         pTemp->registros[0] = itemRetorno;
-        pTemp->apontadores[1] = pRetorno;
         pTemp->apontadores[0] = *pArvore;
+        pTemp->apontadores[1] = pRetorno;
         pTemp->ehFolha = false;
         *pArvore = pTemp;
     }

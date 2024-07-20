@@ -153,12 +153,14 @@ void insere(Item Reg, TipoApontador *pArvore){
     }
 }
 
-void caminhamento(FILE* arquivo, TipoApontador *apontador, TipoApontadorBin apontadorBin, long i){
+void caminhamento(FILE* arquivo, TipoApontador *apontador, long i){
     
     if(apontador == NULL)
         return;
 
     rewind(arquivo);
+
+    TipoPaginaBin paginaBin = { 0 };
     
     TipoApontador** filaOriginal = (TipoApontador**)malloc(QUANT_REG * sizeof(TipoApontador*));
     int frente = 0;
@@ -170,15 +172,17 @@ void caminhamento(FILE* arquivo, TipoApontador *apontador, TipoApontadorBin apon
         TipoApontador* atual = filaOriginal[frente++];
 
         //gravacao em arquivo binario
-        apontadorBin->apontadores[0] = i; i++;
-        apontadorBin->n = (*atual)->n;
+        paginaBin.apontadores[0] = i; i++; 
+        paginaBin.n = (*atual)->n;
         for(int x = 0; x < (*atual)->n; x++){
-            apontadorBin->apontadores[x + 1] = i; i++;
-            apontadorBin->registros[x] = (*atual)->registros[x];
+            paginaBin.apontadores[x + 1] = i; i++;
+            paginaBin.registros[x] = (*atual)->registros[x];
         }
-        fwrite(apontadorBin, sizeof(TipoApontadorBin), 1, arquivo);
+        printf("%u\n", paginaBin.registros->chave);
+        
+        fwrite(&paginaBin, sizeof(TipoPaginaBin), 1, arquivo);
 
-        if(!(*atual)->ehFolha){
+        if(!((*atual)->apontadores[0] == NULL)){
             for(int y = 0; y <= (*atual)->n; y++){
                 if((*atual)->apontadores[y] != NULL){
                     filaOriginal[final++] = (&(*atual)->apontadores[y]);
@@ -196,7 +200,6 @@ int main(){
     FILE *arq2;
     Item item;
     TipoApontador apontador;
-    TipoApontadorBin apontadorBin = NULL;
 
     if((arq1 = fopen("registrosDesordenadosCem.bin", "rb")) == NULL){
         perror("Erro na abertura do arquivo\n");
@@ -209,12 +212,18 @@ int main(){
     for(int i = 0; fread(&item, sizeof(Item), 1, arq1) > 0; i++)
         insere(item, &apontador);
 
-    if((arq2 = fopen("arvoreBCem.bin", "wb")) == NULL){
+    if((arq2 = fopen("arvoreBCem.bin", "w+b")) == NULL){
         perror("Erro na abertura do arquivo\n");
+        fclose(arq1);
         exit(1);
     } 
+
+    if(apontador != NULL)
+        printf("teste 1\n");
     
-    caminhamento(arq2, &apontador, apontadorBin, 1);
+    caminhamento(arq2, &apontador, 1);
+
+    printf("teste 2");
     
     fclose(arq1);
     fclose(arq2);
