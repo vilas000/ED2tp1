@@ -4,8 +4,8 @@
 
 #include <unistd.h>
 
-#define SIZE_DADO2 1000
-#define SIZE_DADO3 5000
+#define SIZE_DADO2 1001
+#define SIZE_DADO3 5001
 #define SIZE_MAX_NO 3
 #define N_ITEM_PAG 3
 //#define read_nodes(i, Item) (!fseek(Arquivo, (pag * N_ITEM_PAG) * sizeof(No), SEEK_SET)) && (fread(temp.no, sizeof(No), N_ITEM_PAG, Arquivo) > 0)
